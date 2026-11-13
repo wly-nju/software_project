@@ -1,0 +1,63 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 模块架构与协作
+!pragma layout smetana
+top to bottom direction
+component "参与者 / 组织者 / 检票员 / 管理员界面" as UI
+component "应用用例入口\n权限校验 + UnitOfWork事务协调" as APP
+package "单实例后端 · 11个逻辑模块" {
+component "M01 身份与授权" as M01
+component "M02 活动与配置" as M02
+component "M03 查询与提醒" as M03
+component "M04 订单票据与占位\n统一状态与凭证更新" as M04
+component "M05 候补递补" as M05
+component "M06 退票与取消联动" as M06
+component "M07 电子票转赠" as M07
+component "M08 检票与纠错" as M08
+component "M09 业务通知" as M09
+component "M10 名单与统计" as M10
+component "M11 审计记录" as M11
+}
+database "MySQL\n业务 + 审计 + 待通知事件" as DB
+component "本地模拟适配器\n支付 / 退款 / 微信登录与推送" as MOCK
+UI --> APP
+APP --> M01 : 每次受保护操作
+APP --> M02
+APP --> M03
+APP --> M04
+APP --> M06
+APP --> M07
+APP --> M08
+M05 --> M04 : 递补占位
+M06 --> M04 : 退款与失效转换
+M07 --> M04 : 锁定 / 持票人 / 凭证
+M08 --> M04 : 核销状态
+M02 --> M04 : 容量下限校验
+M03 --> M10 : 查询统一统计口径
+APP --> M11 : 同事务审计
+APP --> DB : Repository / UnitOfWork
+DB --> M09 : 已提交的待通知事件
+M04 --> MOCK : 模拟支付
+M06 --> MOCK : 模拟退款
+M01 --> MOCK : 模拟授权登录
+M09 --> MOCK : 模拟订阅推送
+note bottom of APP
+关键路径用例统一协调；图中只画主要依赖。
+业务结果与审计同事务提交；通知不延长支付期限。
+模块不是独立部署的微服务。
+end note
+@enduml

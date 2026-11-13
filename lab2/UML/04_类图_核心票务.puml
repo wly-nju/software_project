@@ -1,0 +1,100 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 核心领域类及占位约束
+!pragma layout smetana
+hide circle
+class "活动 Event" as Event {
+ - id: UUID
+ - status: EventStatus
+ + submitReview()
+ + applyApprovedChange()
+}
+class "场次 Session" as Session {
+ - id: UUID
+ - startsAt: Instant
+ - endsAt: Instant
+ - salesStatus: SalesStatus
+ + assertSaleAllowed(now)
+}
+class "票种 TicketType" as Type {
+ - capacity: int
+ - price: Decimal
+ + validateCapacity(occupied)
+}
+class "场次座位 SessionSeat" as Seat {
+ - id: UUID
+ - zone: String
+ - label: String
+}
+class "主订单 Order" as Order {
+ - requestId: UUID
+ - buyerId: UUID
+ - payDeadline: Instant
+ + submitAtomically(items)
+}
+class "子票单 Ticket" as Ticket {
+ - id: UUID
+ - spectatorKey: HMAC
+ - holderId: UUID
+ - paidPrice: Decimal
+ - ruleSnapshot: JSON
+ - state: TicketState
+ - transferLocked: boolean
+ + transition(expectedState, target)
+ + replaceCredential()
+}
+class "有效占位 ActiveClaim" as Claim {
+ - sessionId: UUID
+ - identityKey: HMAC
+ - seatId: UUID?
+ + releaseOnce()
+}
+class "检票凭证 Credential" as Credential {
+ - tokenDigest: String
+ - valid: boolean
+ + revokePermanently()
+}
+class "票据应用服务 TicketService" as Service {
+ + createOrder(request)
+ + applyPayment(result)
+ + expirePayment(orderId)
+ + reserveForWaitlist(entryId)
+ + mutateTicket(command)
+}
+Event "1" *-- "1..*" Session
+Session "1" *-- "1..*" Type
+Session "1" *-- "0..*" Seat
+Order "1" *-- "1..4" Ticket
+Order "0..*" --> "1" Session : 仅一个场次
+Ticket "0..*" --> "1" Type
+Ticket "0..*" --> "0..1" Seat : 历史可重复关联
+Ticket "1" *-- "0..*" Credential
+Ticket "1" -- "0..1" Claim : 当前有效占位
+Service ..> Order
+Service ..> Ticket
+Service ..> Claim
+note bottom of Claim
+UNIQUE(sessionId, identityKey)
+UNIQUE(sessionId, seatId) [非空]
+已报名、已检票、已缺席、待付、退票中持有占位。
+已取消、已退票或取消场次失效后不再持有有效占位。
+end note
+note bottom of Ticket
+原购票人由主订单关联；当前持票人与原付款账户分开。
+历史凭证可有多个，但有效凭证最多一个。
+end note
+@enduml

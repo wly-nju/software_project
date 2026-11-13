@@ -1,0 +1,53 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 幂等下单与支付结果处理
+autonumber
+actor "参与者" as U
+boundary "购票界面" as UI
+control "下单用例 / M04" as S
+database "MySQL" as DB
+participant "模拟支付" as P
+U -> UI : 同场次选观演人、票种和座位
+UI -> S : createOrder(requestId, items[1..4])
+S -> DB : BEGIN；查幂等结果；锁场次行
+alt 已有同请求结果
+ DB --> S : 原订单或当前处理结果
+ S -> DB : 结束只读/无变更事务
+ S --> UI : 返回原结果，不重复占位
+else 新请求
+ S -> DB : 校验权限、最新可售时段、实名与座位
+ alt 任一子票冲突
+  S -> DB : ROLLBACK
+  S --> UI : 整单失败与业务原因
+ else 全部合法
+  S -> DB : 同事务创建主子单、快照、占位\n审计和待通知事件；COMMIT
+  S --> UI : 免费已报名 / 收费待付15分钟
+ end
+end
+U -> P : 选择模拟支付结果
+P -> S : result(txnId, paidAt, orderId)
+S -> DB : BEGIN；锁场次/订单；检查流水唯一和当前状态
+alt 已取消并释放名额
+ S -> DB : 记录迟到支付及异常退款任务\n不恢复票据；审计后COMMIT
+else 同流水重复
+ S -> DB : 不重复出票；结束事务
+else 付款有效且订单待付
+ S -> DB : 待付转已报名，占位不增减\n保存流水、审计与通知；COMMIT
+end
+S --> UI : 可查询最终订单结果
+note over S,DB : 支付调用不持有数据库事务锁；结果应用另开短事务
+@enduml

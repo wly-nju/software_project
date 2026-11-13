@@ -1,0 +1,110 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 身份授权与可追溯记录
+!pragma layout smetana
+hide circle
+class "用户 User" as U {
+ - id: UUID
+ - accountKind: AccountKind
+ + canAccess(scope)
+}
+class "授权 RoleGrant" as G {
+ - role: Role
+ - activityId: UUID?
+ - sessionId: UUID?
+}
+class "实名身份 Identity" as I {
+ - identityKey: HMAC
+ - encryptedId: Bytes
+ - encryptedPhone: Bytes
+}
+class "候补 WaitEntry" as W {
+ - sessionId: UUID
+ - typeId: UUID
+ - queueSeq: long
+ - status: WaitStatus
+ + promote()
+}
+class "子票单 Ticket" as T
+class "支付流水 Payment" as P {
+ - providerTxnId: String
+ - originalAccount: String
+ - status: PaymentStatus
+ + applyOnce()
+}
+class "退款批次 RefundBatch" as B {
+ - sessionId: UUID
+ - ratio: Decimal
+ - reason: String
+ - frozenAt: Instant?
+ + startAndFreeze()
+}
+class "退款 Refund" as R {
+ - refundKey: UUID
+ - amount: Decimal
+ - status: RefundStatus
+ + retrySameRefund()
+}
+class "转赠 Transfer" as X {
+ - fromUser: UUID
+ - toUser: UUID
+ - expiresAt: Instant
+ - status: TransferStatus
+ + acceptOrReturn()
+}
+class "核销事实 CheckIn" as C {
+ - deviceEventId: UUID
+ - occurredAt: Instant
+ - syncResult: SyncStatus
+}
+class "纠错 Correction" as K {
+ - applicantId: UUID
+ - approverId: UUID?
+ - reason: String
+}
+class "通知 Notification" as N {
+ - recipientId: UUID
+ - objectId: UUID
+ - state: MessageState
+}
+class "审计 AuditLog" as A {
+ - actor: String
+ - action: String
+ - beforeAfter: JSON
+ - occurredAt: Instant
+}
+U "1" *-- "0..*" G
+U "0..*" -- "0..*" I : 可代他人购票
+W "0..*" --> "1" I
+T "0..*" --> "1" I : 当前观演身份
+P "1" <-- "0..*" R : 退原账户
+B "0..1" <-- "0..*" R
+T "1" <-- "0..*" R
+T "1" <-- "0..*" X
+T "1" <-- "0..*" C
+C "0..1" <-- "0..*" K
+U "1" <-- "0..*" N
+N -[hidden]down- A
+note bottom of A
+审计对象用类型+ID关联业务
+仅管理员查询，不可修改删除
+end note
+note bottom of B
+执行前可调0%~100%
+执行后冻结，重试沿用同一比例
+end note
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 参与者业务边界
+!pragma layout smetana
+left to right direction
+actor "访客" as Guest
+actor "参与者" as Buyer
+Guest <|-- Buyer
+rectangle "活动票务与报名系统" {
+usecase "组合查询活动与详情" as Q
+usecase "登录与管理观演人" as A
+usecase "订阅开售提醒" as N
+usecase "实名报名 / 选座购票" as B
+usecase "校验实名、库存与时段" as V
+usecase "模拟支付 / 恢复原订单" as P
+usecase "候补登记与退出" as W
+usecase "免费取消 / 付费退票" as R
+usecase "转赠、接收与原路转回" as T
+usecase "查看票据与本人消息" as I
+}
+Guest --> Q
+Buyer --> A
+Buyer --> N
+Buyer --> B
+Buyer --> P
+Buyer --> W
+Buyer --> R
+Buyer --> T
+Buyer --> I
+B ..> V : <<include>>
+note bottom of N : 开售提醒不占名额，也不加入候补队列
+note bottom of T : 接收人实名认证；待接收期间锁票；旧凭证永久失效
+@enduml

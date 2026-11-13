@@ -1,0 +1,54 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 票据状态与受控例外
+!pragma layout smetana
+state "待支付" as Pending
+state "已报名" as Valid
+state "退票中" as Refunding
+state "已退票" as Refunded
+state "已取消" as Cancelled
+state "已检票" as Checked
+state "已缺席" as Absent
+state "已失效\n场次取消" as Invalid
+[*] --> Pending : 收费占位成功
+[*] --> Valid : 免费报名成功
+Pending --> Valid : 期限内有效付款结果
+Pending --> Cancelled : 未付款超时 / 取消场次关闭待付
+Valid --> Refunding : 合法付费退票申请
+Refunding --> Refunded : 普通退款成功
+Refunding --> Valid : 普通退款失败且场次仍有效
+Valid --> Cancelled : 合法免费取消
+Valid --> Checked : 授权时段内核销成功
+Valid --> Absent : 演出结束未检票
+Absent --> Checked : 合法离线事实迟到同步
+Checked --> Valid : 管理员批准纠错
+Absent --> Valid : 管理员批准纠错
+Valid --> Invalid : 取消场次
+Refunding --> Invalid : 取消场次
+Checked --> Invalid : 取消场次
+Absent --> Invalid : 取消场次
+note bottom of Valid
+转赠待接收是独立锁定，不新增票据枚举：
+禁止核销、退票、二次转赠；成功只换持票人与凭证。
+撤回/拒绝/到期按当前场次有效性解锁。
+end note
+note bottom of Invalid
+取消退款进度独立记录；失败不恢复票据。
+旧核销事实保留；迟到离线同步不复活资格。
+已退票、已取消和已失效不能普通回退。
+end note
+@enduml

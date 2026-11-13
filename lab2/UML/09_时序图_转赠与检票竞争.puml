@@ -1,0 +1,44 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 转赠锁定和新旧凭证互斥
+autonumber
+actor "原购票人" as A
+actor "接收人" as B
+control "M07 转赠用例" as X
+control "M04 票据服务" as S
+database "MySQL" as DB
+A -> X : 发起转赠(ticketId, receiver)
+X -> DB : BEGIN；锁场次与票据
+X -> S : 校验开关、付费有效未检票、次数和截止
+X -> DB : 保存申请并锁票；expiresAt=min(24h, T-30m)\n审计并COMMIT
+B -> X : 确认接收
+X -> DB : BEGIN；锁同场次和票据；复核申请未终止
+X -> S : 校验实名、截止与全局同场占位唯一
+alt 校验失败 / 已撤回或已截止
+ X -> DB : 不换持票人；按规则处理终止与解锁\n已取消场次保持失效；审计后COMMIT
+else 校验通过
+ X -> DB : 迁移实名占位，换持票人\n旧凭证永久撤销，新凭证唯一有效
+ X -> DB : 保存转赠历史；向外成功次数+1\n审计与通知事件；COMMIT
+end
+S -> DB : 核销请求也锁同场次与票据
+DB --> S : 依据当前锁定和凭证版本校验
+note over S,DB
+待接收期间拒绝检票/退票/二次转赠。
+接收、撤回、到期、核销串行检查当前状态。
+原路返还仍受截止和实名约束，不重置次数、不复活旧凭证。
+end note
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 管理端与检票端权限
+!pragma layout smetana
+left to right direction
+actor "组织者\n指定活动" as O
+actor "检票人员\n指定场次" as C
+actor "平台管理员" as A
+rectangle "管理与现场业务" {
+usecase "创建活动、场次、票种\n修改与提交审核" as E
+usecase "审核、发布控制与下架" as R
+usecase "授权用户与角色范围" as U
+usecase "申请取消 / 延期 / 纠错" as X
+usecase "审批取消与纠错\n设定退款批次比例" as Y
+usecase "在线核销 / 离线核验\n恢复同步" as S
+usecase "异常核销复核" as V
+usecase "名单导出与容量统计" as D
+usecase "查询审计日志" as L
+}
+O --> E
+O --> X
+O --> D
+C --> S
+A --> R
+A --> U
+A --> Y
+A --> V
+A --> D
+A --> L
+note bottom of D
+组织者仅本人授权活动且敏感字段脱敏。
+检票人员无批量导出权限。
+end note
+note bottom of Y : 系统自动执行超时、递补、缺席等规则，不视为人工角色
+@enduml

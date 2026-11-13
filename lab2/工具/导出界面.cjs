@@ -1,0 +1,43 @@
+const {chromium}=require('C:/Users/24182/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const fs=require('fs'),path=require('path'),{pathToFileURL}=require('url');
+const {captureBoard,saveBoards}=require('./画板导出.cjs');
+const root=path.resolve(__dirname,'..'),ui=path.join(root,'UI界面');
+(async()=>{
+ const browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true,args:['--disable-gpu','--no-first-run']});
+ const page=await browser.newPage({viewport:{width:430,height:932},deviceScaleFactor:1.5});
+ const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+ const url=pathToFileURL(path.join(ui,'原型','index.html')).href;
+ await page.goto(url);await page.waitForFunction(()=>window.app?.screens?.length===28);
+ const screens=await page.evaluate(()=>window.app.screens.map(({id,title,module,role,mobile,desc,req})=>({id,title,module,role,mobile,desc,req})));
+ const layout=[],boards=[];
+ for(const s of screens){
+  await page.setViewportSize({width:s.mobile?430:1280,height:s.mobile?932:960});
+  await page.evaluate(id=>{window.app.state.locked=false;window.app.state.checked=false;window.app.state.refunding=false;window.app.state.batch=false;location.hash=id},s.id);
+  await page.waitForFunction(id=>document.body.dataset.screen===id,s.id);
+  await page.evaluate(()=>document.fonts.ready);
+  let h=await page.evaluate(()=>document.documentElement.scrollHeight);
+  await page.setViewportSize({width:s.mobile?430:1280,height:Math.max(h,s.mobile?932:960)});
+  await page.waitForTimeout(70);
+  const check=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight}));
+  if(check.scroll>check.width+2)layout.push({screen:s.id,...check});
+  await page.screenshot({path:path.join(ui,s.id+'_'+s.title+'.png'),fullPage:true});
+  boards.push(await captureBoard(page,s));
+ }
+ const checks=[];
+ const go=async id=>{await page.evaluate(id=>location.hash=id,id);await page.waitForFunction(id=>document.body.dataset.screen===id,id)};
+ await go('01_login');await page.getByRole('button',{name:'登录',exact:true}).click();await page.waitForFunction(()=>document.body.dataset.screen==='02_explore');checks.push('登录示例导航');
+ await go('04_checkout');await page.getByRole('button',{name:'提交订单并支付'}).click();await page.waitForFunction(()=>document.body.dataset.screen==='05_payment');await page.getByRole('button',{name:'模拟支付成功'}).click();await page.waitForFunction(()=>document.body.dataset.screen==='07_ticket');checks.push('下单到模拟支付成功及票据导航');
+ await go('10_transfer');await page.getByRole('button',{name:'发起转赠并锁票'}).click();await page.waitForFunction(()=>window.app.state.locked===true&&document.body.dataset.screen==='07_ticket');
+ if(!await page.getByRole('button',{name:'申请退票',exact:true}).isDisabled())throw Error('锁票未禁用退票');checks.push('转赠待接收锁定退票入口');
+ await page.setViewportSize({width:430,height:1000});await page.evaluate(()=>document.querySelector('#toast').classList.remove('show'));await page.waitForTimeout(400);await page.screenshot({path:path.join(ui,'29_转赠待接收状态.png'),fullPage:true});
+ boards.push(await captureBoard(page,{id:'29_locked',title:'转赠待接收状态'}));
+ await go('18_checkin');await page.getByRole('button',{name:'演示核销',exact:true}).click();if(await page.evaluate(()=>window.app.state.checked))throw Error('锁票核销未拒绝');checks.push('锁定票核销拒绝反馈');
+ await go('07_ticket');await page.getByRole('button',{name:'撤回转赠'}).click();if(await page.evaluate(()=>window.app.state.locked))throw Error('撤回未解锁');checks.push('撤回解除锁定');
+ await go('18_checkin');await page.getByRole('button',{name:'演示核销',exact:true}).click();await page.getByRole('button',{name:'演示重复核销'}).click();if(!await page.getByText('该票已核销',{exact:true}).count())throw Error('重复核销反馈缺失');checks.push('重复核销提示');
+ await go('17_cancel');await page.getByRole('button',{name:'启动退款批次'}).click();if(!await page.locator('#ratio').isDisabled())throw Error('批次比例未冻结');checks.push('批次启动后比例不可编辑');
+ if(errors.length||layout.length)throw Error(JSON.stringify({errors,layout}));
+ fs.writeFileSync(path.join(ui,'界面目录.json'),JSON.stringify(screens,null,2));
+ saveBoards(boards,path.join(ui,'原型','票遇界面设计.drawio'));
+ fs.writeFileSync(path.join(root,'过程记录','原型自动检查.json'),JSON.stringify({date:'2026-11-13',scope:'仅界面状态及导航演示，不是后端验收',screens:screens.length+1,checks,errors,layout},null,2));
+ await browser.close();console.log('Exported 29 UI screens; passed '+checks.length+' prototype checks.');
+})().catch(e=>{console.error(e);process.exit(1)});

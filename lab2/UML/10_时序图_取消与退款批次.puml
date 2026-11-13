@@ -1,0 +1,43 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 取消资格与退款执行分离
+autonumber
+actor "管理员" as A
+control "M06 取消用例" as S
+database "MySQL" as DB
+participant "模拟退款" as P
+control "M09 通知" as N
+A -> S : 批准/直接取消场次，填写原因
+S -> DB : BEGIN；锁场次；设取消标志\n停止售票、递补、核销、转赠；审计后COMMIT
+S -> DB : 分批、幂等关闭待付/候补/转赠\n有效票置失效，保留核销历史
+A -> S : 执行前设置已检票退款比例与原因
+S -> DB : 新事务校验批次未启动\n保存0%~100%及通知、审计
+A -> S : 启动退款批次
+S -> DB : 锁批次并冻结比例\n按子票生成唯一退款任务；COMMIT
+loop 每个应退子票 / 同笔失败重试
+ S -> P : refund(refundKey, 原支付账户, 冻结金额)
+ P --> S : 成功/失败
+ S -> DB : 新短事务应用唯一结果\n保存流水与审计，失败也不恢复资格
+end
+DB -> N : 取消原因、比例和退款进度
+note over S,DB
+主办方原因进行中取消：已检票付费默认全额，免费不退款。
+完全结束后已检票/缺席不退；其他原因不可自动套用。
+0%是确定的零退款；批次启动后拒绝改比例和重复支付。
+场次取消标志使尚未分批更新的票也立即无法核销。
+end note
+@enduml

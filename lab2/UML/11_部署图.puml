@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 课程原型的本地部署
+!pragma layout smetana
+node "本地笔记本\n8核 / 16GB / SSD\nWindows 11 或 macOS 14" {
+node "浏览器 / 手机视口" as B
+node "单实例后端" as S {
+artifact "11模块应用 + 定时任务\n本地模拟适配器" as APP
+}
+database "MySQL\n业务、审计、通知待处理记录" as DB
+folder "离线检票端本地缓存\n下载/有效期策略待澄清" as CACHE
+}
+B --> S : localhost API\n生产部署另用HTTPS
+S --> DB : 本地数据库连接
+B --> CACHE : 断网核验与待上传记录
+note bottom of CACHE : 不能实时撤权、感知转赠或跨设备去重；联网后复核
+note bottom of DB : 图为后续原型部署设计，不表示已实现或完成压测
+@enduml

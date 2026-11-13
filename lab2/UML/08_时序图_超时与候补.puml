@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Microsoft YaHei
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam ArrowColor #486581
+skinparam classBackgroundColor #F1F6FA
+skinparam classBorderColor #486581
+skinparam componentBackgroundColor #F1F6FA
+skinparam componentBorderColor #486581
+skinparam usecaseBackgroundColor #F1F6FA
+skinparam usecaseBorderColor #486581
+skinparam sequenceMessageAlign center
+skinparam maxMessageSize 260
+skinparam dpi 150
+title 释放名额时保持候补优先
+autonumber
+participant "超时任务" as T
+control "用例协调 / M04" as S
+control "M05 候补" as W
+database "MySQL" as DB
+control "M09 通知" as N
+T -> S : expire(orderId)
+S -> DB : BEGIN；按统一顺序锁场次、订单
+alt 已付款或已处理
+ S -> DB : 不改变占位；结束事务
+else 确认未付且已到期
+ S -> DB : 待付转已取消，释放一次
+ S -> W : promoteReleasedCapacity(sessionId, typeId)
+ W -> DB : 检查仍可递补；取同场同票种最小有效队列号
+ alt 已截止或场次取消
+  W -> DB : 不创建递补订单；标记应失效候补
+ else 有合法候补
+  W -> DB : 复核实名和座位；原子创建递补子票\n免费已报名 / 收费待付15分钟
+  W -> DB : 清理成功者同场其他候补
+ end
+ S -> DB : 写审计和待通知事件；COMMIT
+end
+DB -> N : 提交后读取待通知事件
+N -> N : 生成站内递补消息与模拟推送
+note over S,DB
+直接购票使用相同场次锁和候补优先检查。
+库存释放与候补分配之间不暴露可被抢走的空档。
+未确认的候补座位选择策略作为接口保留。
+end note
+@enduml

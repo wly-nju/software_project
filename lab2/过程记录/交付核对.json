@@ -1,0 +1,297 @@
+{
+  "date": "2026-11-13",
+  "stage": "完整AI设计稿，待本人最终审查",
+  "requirements": 40,
+  "modules": 11,
+  "uml_types": {
+    "组件图": 1,
+    "用例图": 2,
+    "类图": 2,
+    "状态图": 1,
+    "时序图": 4,
+    "部署图": 1
+  },
+  "uml_png": 11,
+  "ui_png": 29,
+  "editable_boards": 29,
+  "pdf_pages": 44,
+  "pdf_image_instances": 40,
+  "prototype_checks": [
+    "登录示例导航",
+    "下单到模拟支付成功及票据导航",
+    "转赠待接收锁定退票入口",
+    "锁定票核销拒绝反馈",
+    "撤回解除锁定",
+    "重复核销提示",
+    "批次启动后比例不可编辑"
+  ],
+  "zip": "C:\\Users\\24182\\Desktop\\软件工程\\output\\lab2\\实验2_241820015_万连勇.zip",
+  "zip_file_count": 52,
+  "zip_sha256": "edf6e18ec0e80da0af0ed5fc981ecba35b61f6679ccff9874df9c2339e7aeecd",
+  "lab1_tags_unchanged": true,
+  "git_committed": false,
+  "human_review": "尚待本人实际审查",
+  "validation_scope": "设计覆盖、实际渲染、原型交互、PDF版式与ZIP逐文件一致性；非后端验收",
+  "files": [
+    {
+      "path": "实验2_241820015_万连勇/实验报告.pdf",
+      "sha256": "cb3486d6954f27351d776b602c47c5d2c14a338ab153a32e28044732be223fd8",
+      "bytes": 5564260
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/01_组件图.png",
+      "sha256": "be4f2d118ce19928f913af1961855041a12c2b8d811dd5afd51743aedb611c9e",
+      "bytes": 247346
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/01_组件图.puml",
+      "sha256": "8fb9c5ee8a904d05bc9245606d9181e197b8b942d63f1fe6ba01dbcfbed04fb0",
+      "bytes": 2213
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/02_用例图_参与者.png",
+      "sha256": "7fe62d94764345e159506bb1b51d8338eba72d0c0564d7bee14fc04455b7aefe",
+      "bytes": 139572
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/02_用例图_参与者.puml",
+      "sha256": "8bc9cf8f43e2072dcee7c51a7accb603e9f2a406ed330e501b99883bacb3695c",
+      "bytes": 1466
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/03_用例图_管理与检票.png",
+      "sha256": "0ca756241508fbb9a7ca2dd77aac6cc01dde29e8371c3f53acf93b36e61d452d",
+      "bytes": 149401
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/03_用例图_管理与检票.puml",
+      "sha256": "ca320acb1fc50bc36d269eac541d7143cf8ab2375c66e57905fe52cd77ae836a",
+      "bytes": 1523
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/04_类图_核心票务.png",
+      "sha256": "8e460ec7c8f21b346b57f6cd9598e93ae041c07cc91deb58c53dc919b9b6f8af",
+      "bytes": 277214
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/04_类图_核心票务.puml",
+      "sha256": "a29091ec7b063739bdb155ac20b4211ba9a741d20df5dd5d00891496acae3dda",
+      "bytes": 2711
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/05_类图_身份与业务记录.png",
+      "sha256": "283892f99b845c905cb96ea2529d5faea2ea5cf0742c60d973b74863d8c192c1",
+      "bytes": 247822
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/05_类图_身份与业务记录.puml",
+      "sha256": "fbcbebb9b1a9c4c2a9ff2297647757ca81f5dfda19b7717ec616ed5384ca2241",
+      "bytes": 2562
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/06_状态图_子票单.png",
+      "sha256": "32082f332a1b7535cbaeab72f7e09c9c399e7aeed908ce0e1de1108fef8e31fa",
+      "bytes": 120133
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/06_状态图_子票单.puml",
+      "sha256": "7b2e45c962f99a367fd53884774c8ab265744e0ee4b6b2b248827d6917f5463d",
+      "bytes": 2042
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/07_时序图_整单下单与支付.png",
+      "sha256": "cd3572e04d462c0008774a3dee290a556d7a145e900412ccd0aa4c09d8545dfd",
+      "bytes": 124407
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/07_时序图_整单下单与支付.puml",
+      "sha256": "948f6f8ad81125d322d543ae9eb43371651519295b0f14e02860703cb8fd1f27",
+      "bytes": 1976
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/08_时序图_超时与候补.png",
+      "sha256": "18b4c3e97ecf4bc39e508ffe993408b7d2be6f67f4ad6bfda7dcad0a9bd5440a",
+      "bytes": 107509
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/08_时序图_超时与候补.puml",
+      "sha256": "27ef61a89107fb31c1e655b69733dae8ee0ba7dcb366687436f873eadd66b055",
+      "bytes": 1716
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/09_时序图_转赠与检票竞争.png",
+      "sha256": "90525b38609779ff2f89c56ad7095b234597c2df6ebf80d945fd688875d69f44",
+      "bytes": 112307
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/09_时序图_转赠与检票竞争.puml",
+      "sha256": "abd34867cb12e6441cd51040fd0a4f24b2601d009eb5dcaa8430da7e8050e361",
+      "bytes": 1779
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/10_时序图_取消与退款批次.png",
+      "sha256": "925eff3bba0ac1c9f138d0defc0a6d5cd10723e7ee8f6e9ee42ace4f5811e0a9",
+      "bytes": 115608
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/10_时序图_取消与退款批次.puml",
+      "sha256": "8b59193f98b5ea2982655e0ce014bbce4ea9df073b63959c6e9e55e369a32502",
+      "bytes": 1832
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/11_部署图.png",
+      "sha256": "a91991acb018c5fb9a35dad376f7a453bce2b2d677536eeeb2ca837bf1ef984d",
+      "bytes": 60845
+    },
+    {
+      "path": "实验2_241820015_万连勇/UML/11_部署图.puml",
+      "sha256": "ef36c20a716c62e7c101d9ec035f96d50b02aacc5409e2cb2256f3ff097cef27",
+      "bytes": 1271
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/01_login_登录与身份入口.png",
+      "sha256": "5c1b8bbd9f58bb6e1bdee79180483798cdfdcf72bb902b65aaccb3c4a45713c9",
+      "bytes": 54203
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/02_explore_活动查询.png",
+      "sha256": "4ab9ce309a993f5c58b96d2c2ac1e01e74bd02257a2853134aac2aef6e67a918",
+      "bytes": 177043
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/03_detail_活动详情与提醒.png",
+      "sha256": "361448008f268f2c85efb5f7368c97467d0e7b01a5f1fd25307a4efe13ebeb81",
+      "bytes": 154471
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/04_checkout_实名整单确认.png",
+      "sha256": "36b6537da376b17d7019f529062254eea27cf1af98c6600f51bc366a4ba7fa0a",
+      "bytes": 139725
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/05_payment_模拟支付与超时.png",
+      "sha256": "abc88a046c007695b703e7a81af79b8cd4496ebf98fd415f89318a188c41a06c",
+      "bytes": 79636
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/06_orders_订单列表与状态.png",
+      "sha256": "ffd678ada692eff6a84dc8379f438b67ce393e90e64c9a9a50176a2e270733d0",
+      "bytes": 80007
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/07_ticket_电子票与锁定状态.png",
+      "sha256": "a68ffc43d6c290b039cdef3577ee3e08e3b43d60868e097a46f11beaa790a34c",
+      "bytes": 62945
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/08_wait_候补登记与递补.png",
+      "sha256": "d8546ebbe77c4576a426a090f9f45ff5fab6c5841d4a6abe8ff74adb6d286017",
+      "bytes": 82970
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/09_refund_退票申请与进度.png",
+      "sha256": "5205e035e7e2f9f9673bd94a9222f57527150ca5daa8c998a46d642d5b2296e7",
+      "bytes": 88097
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/10_transfer_转赠发起与接收.png",
+      "sha256": "90c9719452dc4c655da505e25a5dec513092a8ccbc45237585487055ef720955",
+      "bytes": 97046
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/11_messages_消息中心.png",
+      "sha256": "3a1d4cc4d53247a79b2e23ca7502973d46ec4d36cba23982e49ac007d90b99f5",
+      "bytes": 71564
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/12_spectators_观演人与实名资料.png",
+      "sha256": "0fa9d5a4750fb269735af73fb7dba4927f72f12953cd6f01103706dbe32ee4f2",
+      "bytes": 59641
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/13_organizer_组织者活动工作台.png",
+      "sha256": "ba6eeb23884a0ac5ed618d05739c24f6b7bb62095dca0d87de755dd57d5ee087",
+      "bytes": 156664
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/14_editor_活动创建与核心修改.png",
+      "sha256": "28ac530501aeb5d4bf1668aaf933889c50681ff37ce8ba86cf56b6d7c309ad53",
+      "bytes": 235819
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/15_session_场次票种容量及座位.png",
+      "sha256": "66ef86f5752e64c75ef16cbf7c6b18760f776a5e87011600c2bb17f32d8b6bf7",
+      "bytes": 162639
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/16_review_管理员审核与发布控制.png",
+      "sha256": "cee2a587e494264c17357bdefefdfe6f651ca3282455c2d2959a26fa8f6f21e8",
+      "bytes": 142840
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/17_cancel_取消审批与退款批次.png",
+      "sha256": "9ed9acd22b03ab90d3ddab31dab0edd0541a3e08b62cce583f36dab22cdc827a",
+      "bytes": 185437
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/18_checkin_检票核销与重复提示.png",
+      "sha256": "536d3ad8de798aa18239245d5bd2075a872dc7680b282b570439ee36966aebbc",
+      "bytes": 74505
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/19_offline_离线核验与同步复核.png",
+      "sha256": "a46b69bb2c1afe08bcd4f2fe27af7767f0460e623498da0d81ed9dac5bdf82b6",
+      "bytes": 78072
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/20_correction_核销异常与纠错审批.png",
+      "sha256": "ec4101e2fa60c5b30a50fb0fd899da12811aa3613ed115e9fd9c7731327e68ab",
+      "bytes": 155474
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/21_roster_名单筛选与脱敏导出.png",
+      "sha256": "82c9d7ec08f8880837eec9e5ef412b1a66c78de2a3ade7bc13cc5c9c82b6d501",
+      "bytes": 124980
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/22_statistics_容量与参与情况统计.png",
+      "sha256": "25f6f5521524007fa51a0762534ea6543d700648bc3308c9ade7598134db4251",
+      "bytes": 122540
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/23_roles_角色与范围授权.png",
+      "sha256": "eab9c9e65284728f827679464297d3e27813788ada12beabfc3834a0e9541e98",
+      "bytes": 143104
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/24_audit_审计日志查询.png",
+      "sha256": "7ce0e98cafd5bde7347bfc342d4f64decbe25aa22782f5df3953fd0ec46da25c",
+      "bytes": 130917
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/25_seats_参与者分区选座.png",
+      "sha256": "99931592ea360be02985f5ee5e43705192fa74474653606a08c0f68f9536453b",
+      "bytes": 73463
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/26_states_异常与边界反馈.png",
+      "sha256": "6b5c60d596d15b422c892123f3e14de2f6b65c6581fa04c661e32cc4bd85aec5",
+      "bytes": 150205
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/27_register_账号注册.png",
+      "sha256": "908c1ee3f52e84014a44497c1fa9c3a7181a92968e05edbe88b20ae0248a19ca",
+      "bytes": 53940
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/28_change_request_组织者取消延期申请.png",
+      "sha256": "07001c818698f925f14cf72cee4ba9fbe80ae477835825dfae965521df0f0846",
+      "bytes": 145290
+    },
+    {
+      "path": "实验2_241820015_万连勇/UI界面/29_转赠待接收状态.png",
+      "sha256": "cad5ee882180280a9efbd94939309cc0f2e888f057bc5f946d8a1c3bf1156622",
+      "bytes": 65830
+    }
+  ]
+}
