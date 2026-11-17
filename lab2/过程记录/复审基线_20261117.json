@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-17",
+  "user_report": "用户表示实验二初步版已经作为第一次交付提交；未登录课程网站核验上传文件",
+  "ai_baseline_commit": "10c1e471049ea09faf5c4a46a4e503036fcce7e1",
+  "head_at_resume": "10c1e471049ea09faf5c4a46a4e503036fcce7e1",
+  "working_tree_at_resume": " M lab2/AI使用记录.md\n M lab2/人工审查记录.md\n M lab2/审查与提交清单.md\n",
+  "review_progress": "HREV-001范围/权限摘要基本认可；第三步架构与数据关系待本人判断",
+  "remote_status": "本地跟踪信息显示main领先origin/main一个提交；未联网刷新远程状态",
+  "git_modified_by_assistant": false,
+  "local_archive_snapshot": {
+    "source": "C:\\Users\\24182\\Desktop\\软件工程\\output\\lab2\\实验2_241820015_万连勇.zip",
+    "snapshot": "C:\\Users\\24182\\Desktop\\软件工程\\output\\lab2\\历史版本\\实验2_241820015_万连勇_复审前本地包_20261117.zip",
+    "sha256": "edf6e18ec0e80da0af0ed5fc981ecba35b61f6679ccff9874df9c2339e7aeecd",
+    "files": 52,
+    "matches_ai_baseline": true,
+    "differences": [],
+    "provenance_note": "这是恢复审查时本地包的快照，不自动视为已核验的课程网站上传版本",
+    "archive_to_repo_mapping": "ZIP根目录实验报告.pdf对应仓库lab2/报告/实验报告.pdf，其余文件对应lab2下同名目录"
+  }
+}
