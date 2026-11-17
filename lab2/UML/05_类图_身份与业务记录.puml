@@ -39,8 +39,10 @@ class "候补 WaitEntry" as W {
  - status: WaitStatus
  + promote()
 }
+class "主订单 Order" as O
 class "子票单 Ticket" as T
 class "支付流水 Payment" as P {
+ - orderId: UUID
  - providerTxnId: String
  - originalAccount: String
  - status: PaymentStatus
@@ -91,6 +93,8 @@ U "1" *-- "0..*" G
 U "0..*" -- "0..*" I : 可代他人购票
 W "0..*" --> "1" I
 T "0..*" --> "1" I : 当前观演身份
+O "1" *-- "1..4" T
+O "1" <-- "0..*" P : 归属订单
 P "1" <-- "0..*" R : 退原账户
 B "0..1" <-- "0..*" R
 T "1" <-- "0..*" R
@@ -99,6 +103,11 @@ T "1" <-- "0..*" C
 C "0..1" <-- "0..*" K
 U "1" <-- "0..*" N
 N -[hidden]down- A
+note top of P
+orderId外键指向主订单
+每条流水只归属一个订单
+保留历史流水，结果不得重复应用
+end note
 note bottom of A
 审计对象用类型+ID关联业务
 仅管理员查询，不可修改删除
